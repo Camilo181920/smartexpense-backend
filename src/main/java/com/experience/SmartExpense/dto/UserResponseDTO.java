@@ -1,8 +1,6 @@
 package com.experience.SmartExpense.dto;
 
-
 public class UserResponseDTO {
-
 
     private Long id;
 
@@ -12,36 +10,28 @@ public class UserResponseDTO {
 
     private String email;
 
+    public UserResponseDTO(Long id,
+                           String firstName,
+                           String lastName,
+                           String email) {
 
-
-    public UserResponseDTO(
-            Long id,
-            String firstName,
-            String lastName,
-            String email
-    ){
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
     }
 
-
-
     public Long getId() {
         return id;
     }
-
 
     public String getFirstName() {
         return firstName;
     }
 
-
     public String getLastName() {
         return lastName;
     }
-
 
     public String getEmail() {
         return email;
