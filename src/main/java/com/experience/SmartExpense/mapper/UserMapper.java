@@ -3,6 +3,7 @@ package com.experience.SmartExpense.mapper;
 import com.experience.SmartExpense.dto.UserRequestDTO;
 import com.experience.SmartExpense.dto.UserResponseDTO;
 import com.experience.SmartExpense.entity.User;
+import com.experience.SmartExpense.entity.Role;
 
 public class UserMapper {
 
@@ -16,6 +17,7 @@ public class UserMapper {
                 .lastName(dto.getLastName())
                 .email(dto.getEmail())
                 .password(dto.getPassword())
+                .role(Role.USER)
                 .build();
     }
 

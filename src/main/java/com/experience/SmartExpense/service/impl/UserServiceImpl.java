@@ -5,6 +5,7 @@ import com.experience.SmartExpense.entity.User;
 import com.experience.SmartExpense.repository.UserRepository;
 import com.experience.SmartExpense.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -14,18 +15,20 @@ public class UserServiceImpl implements UserService {
 
 
     private final UserRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
-
-    public UserServiceImpl(UserRepository repository){
+    public UserServiceImpl(UserRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
     @Override
-    public User createUser(User user){
+    public User createUser(User user) {
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return repository.save(user);
-
     }
 
 
