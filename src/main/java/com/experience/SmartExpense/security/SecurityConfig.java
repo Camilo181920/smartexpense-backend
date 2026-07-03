@@ -33,8 +33,16 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers("/api/auth/**").permitAll()
+
+                        // Cualquier usuario autenticado puede consultar su perfil
+                        .requestMatchers("/api/users/me").authenticated()
+
+                        // Solo administradores
                         .requestMatchers("/api/users/**").hasRole("ADMIN")
+
+                        // Expenses
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

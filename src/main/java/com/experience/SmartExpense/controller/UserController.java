@@ -7,6 +7,7 @@ import com.experience.SmartExpense.mapper.UserMapper;
 import com.experience.SmartExpense.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +35,16 @@ public class UserController {
     public UserResponseDTO getUserById(@PathVariable Long id) {
 
         User user = service.getUserById(id);
+
+        return UserMapper.toResponse(user);
+    }
+
+    @GetMapping("/me")
+    public UserResponseDTO getCurrentUser(Authentication authentication) {
+
+        String email = authentication.getName();
+
+        User user = service.getUserByEmail(email);
 
         return UserMapper.toResponse(user);
     }

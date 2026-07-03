@@ -46,4 +46,14 @@ public class UserServiceImpl implements UserService {
                         new ResourceNotFoundException("User not found with id: " + id));
     }
 
+    @Override
+    public User getUserByEmail(String email) {
+
+        return repository.findByEmail(email)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found with email: " + email
+                        ));
+    }
+
 }
