@@ -3,6 +3,8 @@ package com.experience.SmartExpense.controller;
 import com.experience.SmartExpense.dto.LoginRequest;
 import com.experience.SmartExpense.dto.LoginResponse;
 import com.experience.SmartExpense.dto.RegisterRequest;
+import com.experience.SmartExpense.dto.RegisterResponse;
+import com.experience.SmartExpense.dto.AuthResponse;
 import com.experience.SmartExpense.service.AuthService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,13 +18,23 @@ public class AuthController {
         this.authService = authService;
     }
 
+//    @PostMapping("/register")
+//    public RegisterResponse register(@RequestBody RegisterRequest request) {
+//        return authService.register(request);
+//    }
+//
+//    @PostMapping("/login")
+//    public LoginResponse login(@RequestBody LoginRequest request) {
+//        return authService.login(request);
+//    }
+
     @PostMapping("/register")
-    public void register(@RequestBody RegisterRequest request) {
-        authService.register(request);
+    public AuthResponse register(@RequestBody RegisterRequest request) {
+        return authService.register(request);
     }
 
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest request) {
+    public AuthResponse login(@RequestBody LoginRequest request) {
         return authService.login(request);
     }
 }
