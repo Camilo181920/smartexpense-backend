@@ -1,7 +1,7 @@
 package com.experience.SmartExpense.mapper;
 
-import com.experience.SmartExpense.dto.UserRequestDTO;
-import com.experience.SmartExpense.dto.UserResponseDTO;
+import com.experience.SmartExpense.dto.UserRequest;
+import com.experience.SmartExpense.dto.UserResponse;
 import com.experience.SmartExpense.entity.User;
 import com.experience.SmartExpense.entity.Role;
 
@@ -10,7 +10,7 @@ public class UserMapper {
     private UserMapper() {
     }
 
-    public static User toEntity(UserRequestDTO dto) {
+    public static User toEntity(UserRequest dto) {
 
         return User.builder()
                 .firstName(dto.getFirstName())
@@ -21,9 +21,9 @@ public class UserMapper {
                 .build();
     }
 
-    public static UserResponseDTO toResponse(User user) {
+    public static UserResponse toResponse(User user) {
 
-        return new UserResponseDTO(
+        return new UserResponse(
                 user.getId(),
                 user.getFirstName(),
                 user.getLastName(),

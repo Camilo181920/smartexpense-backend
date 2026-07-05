@@ -1,7 +1,7 @@
 package com.experience.SmartExpense.controller;
 
-import com.experience.SmartExpense.dto.UserRequestDTO;
-import com.experience.SmartExpense.dto.UserResponseDTO;
+import com.experience.SmartExpense.dto.UserRequest;
+import com.experience.SmartExpense.dto.UserResponse;
 import com.experience.SmartExpense.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
@@ -20,17 +20,17 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserResponseDTO> getUsers() {
+    public List<UserResponse> getUsers() {
         return service.getUsers();
     }
 
     @GetMapping("/{id}")
-    public UserResponseDTO getUserById(@PathVariable Long id) {
+    public UserResponse getUserById(@PathVariable Long id) {
         return service.getUserById(id);
     }
 
     @GetMapping("/me")
-    public UserResponseDTO getCurrentUser(Authentication authentication) {
+    public UserResponse getCurrentUser(Authentication authentication) {
 
         String email = authentication.getName();
 
@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PostMapping
-    public UserResponseDTO createUser(@Valid @RequestBody UserRequestDTO request) {
+    public UserResponse createUser(@Valid @RequestBody UserRequest request) {
         return service.createUser(request);
     }
 }

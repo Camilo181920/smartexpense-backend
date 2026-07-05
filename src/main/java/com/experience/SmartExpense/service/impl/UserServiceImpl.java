@@ -1,7 +1,7 @@
 package com.experience.SmartExpense.service.impl;
 
-import com.experience.SmartExpense.dto.UserRequestDTO;
-import com.experience.SmartExpense.dto.UserResponseDTO;
+import com.experience.SmartExpense.dto.UserRequest;
+import com.experience.SmartExpense.dto.UserResponse;
 import com.experience.SmartExpense.entity.User;
 import com.experience.SmartExpense.exception.ResourceNotFoundException;
 import com.experience.SmartExpense.mapper.UserMapper;
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO createUser(UserRequestDTO userRequest) {
+    public UserResponse createUser(UserRequest userRequest) {
 
         User user = UserMapper.toEntity(userRequest);
 
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponseDTO> getUsers() {
+    public List<UserResponse> getUsers() {
 
         return repository.findAll()
                 .stream()
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO getUserById(Long id) {
+    public UserResponse getUserById(Long id) {
 
         User user = repository.findById(id)
                 .orElseThrow(() ->
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO getUserByEmail(String email) {
+    public UserResponse getUserByEmail(String email) {
 
         User user = repository.findByEmail(email)
                 .orElseThrow(() ->

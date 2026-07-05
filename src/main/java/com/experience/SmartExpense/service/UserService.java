@@ -1,17 +1,17 @@
 package com.experience.SmartExpense.service;
 
-import com.experience.SmartExpense.dto.UserRequestDTO;
-import com.experience.SmartExpense.dto.UserResponseDTO;
+import com.experience.SmartExpense.dto.UserRequest;
+import com.experience.SmartExpense.dto.UserResponse;
 
 import java.util.List;
 
 public interface UserService {
 
-    UserResponseDTO createUser(UserRequestDTO userRequest);
+    UserResponse createUser(UserRequest userRequest);
 
-    List<UserResponseDTO> getUsers();
+    List<UserResponse> getUsers();
 
-    UserResponseDTO getUserById(Long id);
+    UserResponse getUserById(Long id);
 
-    UserResponseDTO getUserByEmail(String email);
+    UserResponse getUserByEmail(String email);
 }

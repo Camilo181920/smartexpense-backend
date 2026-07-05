@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExpenseResponseDTO {
+public class ExpenseResponse {
 
     private Long id;
 

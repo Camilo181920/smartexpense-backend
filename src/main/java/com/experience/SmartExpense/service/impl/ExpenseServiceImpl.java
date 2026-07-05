@@ -1,10 +1,12 @@
 package com.experience.SmartExpense.service.impl;
 
 import com.experience.SmartExpense.dto.ExpenseRequest;
-import com.experience.SmartExpense.dto.ExpenseResponseDTO;
+import com.experience.SmartExpense.dto.ExpenseResponse;
 import com.experience.SmartExpense.dto.CategoryTotalDTO;
 import com.experience.SmartExpense.entity.Expense;
 import com.experience.SmartExpense.entity.User;
+import com.experience.SmartExpense.exception.UnauthorizedException;
+import com.experience.SmartExpense.mapper.ExpenseMapper;
 import com.experience.SmartExpense.exception.ResourceNotFoundException;
 import com.experience.SmartExpense.repository.ExpenseRepository;
 import com.experience.SmartExpense.repository.UserRepository;
@@ -26,37 +28,32 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public ExpenseResponseDTO createExpense(String userEmail, ExpenseRequest request) {
+    public ExpenseResponse createExpense(String userEmail, ExpenseRequest request) {
 
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        Expense expense = Expense.builder()
-                .title(request.getTitle())
-                .amount(request.getAmount())
-                .category(request.getCategory())
-                .user(user)
-                .build();
+        Expense expense = ExpenseMapper.toEntity(request);
+
+        expense.setUser(user);
 
         Expense savedExpense = expenseRepository.save(expense);
 
-        return mapToDTO(savedExpense);
+        return ExpenseMapper.toResponse(savedExpense);
     }
 
     @Override
-    public List<ExpenseResponseDTO> getExpenses(String userEmail) {
+    public List<ExpenseResponse> getExpenses(String userEmail) {
 
         return expenseRepository.findByUserEmail(userEmail)
                 .stream()
-                .map(this::mapToDTO)
+                .map(ExpenseMapper::toResponse)
                 .toList();
     }
 
     @Override
     public Double getTotalExpenses(String email) {
-
-        Double total = expenseRepository.getTotalByUserEmail(email);
-        return total != null ? total : 0.0;
+        return expenseRepository.getTotalByUserEmail(email);
     }
 
     @Override
@@ -65,13 +62,13 @@ public class ExpenseServiceImpl implements ExpenseService {
     }
 
     @Override
-    public ExpenseResponseDTO updateExpense(Long id, ExpenseRequest request, String userEmail) {
+    public ExpenseResponse updateExpense(Long id, ExpenseRequest request, String userEmail) {
 
         Expense expense = expenseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Expense not found"));
 
         if (!expense.getUser().getEmail().equals(userEmail)) {
-            throw new RuntimeException("Unauthorized access to this expense");
+            throw new UnauthorizedException("Unauthorized");
         }
 
         expense.setTitle(request.getTitle());
@@ -80,7 +77,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
         Expense updated = expenseRepository.save(expense);
 
-        return mapToDTO(updated);
+        return ExpenseMapper.toResponse(updated);
     }
 
     @Override
@@ -90,20 +87,10 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .orElseThrow(() -> new ResourceNotFoundException("Expense not found"));
 
         if (!expense.getUser().getEmail().equals(userEmail)) {
-            throw new RuntimeException("Unauthorized access to this expense");
+            throw new UnauthorizedException("Unauthorized");
         }
 
         expenseRepository.delete(expense);
     }
 
-    private ExpenseResponseDTO mapToDTO(Expense expense) {
-
-        return ExpenseResponseDTO.builder()
-                .id(expense.getId())
-                .title(expense.getTitle())
-                .amount(expense.getAmount())
-                .category(expense.getCategory())
-                .createdAt(expense.getCreatedAt())
-                .build();
-    }
 }

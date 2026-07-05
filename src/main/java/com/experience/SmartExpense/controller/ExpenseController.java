@@ -2,7 +2,7 @@ package com.experience.SmartExpense.controller;
 
 import com.experience.SmartExpense.dto.CategoryTotalDTO;
 import com.experience.SmartExpense.dto.ExpenseRequest;
-import com.experience.SmartExpense.dto.ExpenseResponseDTO;
+import com.experience.SmartExpense.dto.ExpenseResponse;
 import com.experience.SmartExpense.service.ExpenseService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ public class ExpenseController {
     }
 
     @PostMapping
-    public ResponseEntity<ExpenseResponseDTO> createExpense(
+    public ResponseEntity<ExpenseResponse> createExpense(
             @Valid @RequestBody ExpenseRequest request,
             Authentication authentication
     ) {
@@ -35,7 +35,7 @@ public class ExpenseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ExpenseResponseDTO>> getExpenses(
+    public ResponseEntity<List<ExpenseResponse>> getExpenses(
             Authentication authentication
     ) {
         return ResponseEntity.ok(
@@ -62,7 +62,7 @@ public class ExpenseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ExpenseResponseDTO> updateExpense(
+    public ResponseEntity<ExpenseResponse> updateExpense(
             @PathVariable Long id,
             @Valid @RequestBody ExpenseRequest request,
             Authentication authentication
