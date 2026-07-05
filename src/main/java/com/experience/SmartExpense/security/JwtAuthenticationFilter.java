@@ -1,5 +1,6 @@
 package com.experience.SmartExpense.security;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
-        // 1. Si no hay token, sigue normal
+        // No token → continuar flujo normal
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -39,25 +40,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(7);
 
-        // 2. Extraer datos
-        String email = jwtService.extractEmail(token);
-        String role = jwtService.extractRole(token);
+        try {
 
-        // 3. Validar token
-        if (email != null && jwtService.isTokenValid(token)) {
+            if (!jwtService.isTokenValid(token)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
-            // IMPORTANTE: Spring espera "ROLE_USER"
-            SimpleGrantedAuthority authority =
-                    new SimpleGrantedAuthority(role);
+            String email = jwtService.extractEmail(token);
+            String role = jwtService.extractRole(token);
 
-            UsernamePasswordAuthenticationToken auth =
-                    new UsernamePasswordAuthenticationToken(
-                            email,
-                            null,
-                            List.of(authority)
-                    );
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            SecurityContextHolder.getContext().setAuthentication(auth);
+                SimpleGrantedAuthority authority =
+                        new SimpleGrantedAuthority(role);
+
+                UsernamePasswordAuthenticationToken auth =
+                        new UsernamePasswordAuthenticationToken(
+                                email,
+                                null,
+                                List.of(authority)
+                        );
+
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            }
+
+        } catch (JwtException | IllegalArgumentException e) {
+            // Token inválido → simplemente no autenticamos
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);

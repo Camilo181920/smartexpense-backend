@@ -1,13 +1,13 @@
 package com.experience.SmartExpense.controller;
 
+import com.experience.SmartExpense.dto.CategoryTotalDTO;
 import com.experience.SmartExpense.dto.ExpenseRequest;
 import com.experience.SmartExpense.dto.ExpenseResponseDTO;
-import com.experience.SmartExpense.dto.CategoryTotalDTO;
 import com.experience.SmartExpense.service.ExpenseService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -22,45 +22,57 @@ public class ExpenseController {
     }
 
     @PostMapping
-    public ExpenseResponseDTO createExpense(
+    public ResponseEntity<ExpenseResponseDTO> createExpense(
             @Valid @RequestBody ExpenseRequest request,
             Authentication authentication
     ) {
-        String email = authentication.getName();
-        return expenseService.createExpense(email, request);
+        return ResponseEntity.ok(
+                expenseService.createExpense(
+                        authentication.getName(),
+                        request
+                )
+        );
     }
 
     @GetMapping
-    public List<ExpenseResponseDTO> getExpenses(Authentication authentication) {
-
-        String email = authentication.getName();
-        return expenseService.getExpenses(email);
+    public ResponseEntity<List<ExpenseResponseDTO>> getExpenses(
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok(
+                expenseService.getExpenses(authentication.getName())
+        );
     }
 
     @GetMapping("/summary")
-    public Double getSummary(Authentication authentication) {
-
-        String email = authentication.getName();
-        return expenseService.getTotalExpenses(email);
+    public ResponseEntity<Double> getSummary(
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok(
+                expenseService.getTotalExpenses(authentication.getName())
+        );
     }
 
     @GetMapping("/by-category")
-    public List<CategoryTotalDTO> getByCategory(Authentication authentication) {
-
-        String email = authentication.getName();
-        return expenseService.getExpensesByCategory(email);
+    public ResponseEntity<List<CategoryTotalDTO>> getByCategory(
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok(
+                expenseService.getExpensesByCategory(authentication.getName())
+        );
     }
 
     @PutMapping("/{id}")
-    public ExpenseResponseDTO updateExpense(
+    public ResponseEntity<ExpenseResponseDTO> updateExpense(
             @PathVariable Long id,
             @Valid @RequestBody ExpenseRequest request,
             Authentication authentication
     ) {
-        return expenseService.updateExpense(
-                id,
-                request,
-                authentication.getName()
+        return ResponseEntity.ok(
+                expenseService.updateExpense(
+                        id,
+                        request,
+                        authentication.getName()
+                )
         );
     }
 
