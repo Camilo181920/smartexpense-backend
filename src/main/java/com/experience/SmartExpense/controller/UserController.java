@@ -2,15 +2,12 @@ package com.experience.SmartExpense.controller;
 
 import com.experience.SmartExpense.dto.UserRequestDTO;
 import com.experience.SmartExpense.dto.UserResponseDTO;
-import com.experience.SmartExpense.entity.User;
-import com.experience.SmartExpense.mapper.UserMapper;
 import com.experience.SmartExpense.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -24,19 +21,12 @@ public class UserController {
 
     @GetMapping
     public List<UserResponseDTO> getUsers() {
-
-        return service.getUsers()
-                .stream()
-                .map(UserMapper::toResponse)
-                .collect(Collectors.toList());
+        return service.getUsers();
     }
 
     @GetMapping("/{id}")
     public UserResponseDTO getUserById(@PathVariable Long id) {
-
-        User user = service.getUserById(id);
-
-        return UserMapper.toResponse(user);
+        return service.getUserById(id);
     }
 
     @GetMapping("/me")
@@ -44,18 +34,11 @@ public class UserController {
 
         String email = authentication.getName();
 
-        User user = service.getUserByEmail(email);
-
-        return UserMapper.toResponse(user);
+        return service.getUserByEmail(email);
     }
 
     @PostMapping
     public UserResponseDTO createUser(@Valid @RequestBody UserRequestDTO request) {
-
-        User user = UserMapper.toEntity(request);
-
-        User savedUser = service.createUser(user);
-
-        return UserMapper.toResponse(savedUser);
+        return service.createUser(request);
     }
 }

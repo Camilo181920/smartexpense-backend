@@ -1,5 +1,6 @@
 package com.experience.SmartExpense.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,16 +19,21 @@ public class Expense {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 150)
     private String title;
 
+    @Column(nullable = false)
     private Double amount;
 
+    @Column(nullable = false, length = 50)
     private String category;
 
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @PrePersist

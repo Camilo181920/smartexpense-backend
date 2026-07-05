@@ -2,6 +2,7 @@ package com.experience.SmartExpense.service;
 
 import com.experience.SmartExpense.dto.ExpenseRequest;
 import com.experience.SmartExpense.dto.ExpenseResponseDTO;
+import com.experience.SmartExpense.dto.CategoryTotalDTO;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface ExpenseService {
 
     Double getTotalExpenses(String email);
 
-    List<Object[]> getExpensesByCategory(String email);
+    List<CategoryTotalDTO> getExpensesByCategory(String email);
 
     ExpenseResponseDTO updateExpense(Long id, ExpenseRequest request, String userEmail);
 

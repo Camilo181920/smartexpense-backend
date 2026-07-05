@@ -1,9 +1,7 @@
 package com.experience.SmartExpense.service.impl;
 
 import com.experience.SmartExpense.dto.LoginRequest;
-import com.experience.SmartExpense.dto.LoginResponse;
 import com.experience.SmartExpense.dto.RegisterRequest;
-import com.experience.SmartExpense.dto.RegisterResponse;
 import com.experience.SmartExpense.dto.AuthResponse;
 import com.experience.SmartExpense.entity.Role;
 import com.experience.SmartExpense.entity.User;
@@ -30,52 +28,10 @@ public class AuthServiceImpl implements AuthService {
         this.jwtService = jwtService;
     }
 
-//    @Override
-//    public RegisterResponse register(RegisterRequest request) {
-//
-//        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-//            throw new EmailAlreadyExistsException("Email already exists");
-//        }
-//
-//        User user = new User();
-//        user.setFirstName(request.getFirstName());
-//        user.setLastName(request.getLastName());
-//        user.setEmail(request.getEmail());
-//        user.setPassword(passwordEncoder.encode(request.getPassword()));
-//        user.setRole(Role.USER);
-//
-//        userRepository.save(user);
-//
-//        return new RegisterResponse("User registered successfully");
-//    }
-
-//    @Override
-//    public LoginResponse login(LoginRequest request) {
-//
-//        User user = userRepository.findByEmail(request.getEmail())
-//                .orElseThrow(() -> new InvalidCredentialsException("Invalid credentials"));
-//
-//        boolean passwordMatch = passwordEncoder.matches(
-//                request.getPassword(),
-//                user.getPassword()
-//        );
-//
-//        if (!passwordMatch) {
-//            throw new InvalidCredentialsException("Invalid credentials");
-//        }
-//
-//        String token = jwtService.generateToken(
-//                user.getEmail(),
-//                user.getRole().name()
-//        );
-//
-//        return new LoginResponse(token);
-//    }
-
     @Override
     public AuthResponse register(RegisterRequest request) {
 
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new EmailAlreadyExistsException("Email already exists");
         }
 
@@ -88,10 +44,7 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
 
-        String token = jwtService.generateToken(
-                user.getEmail(),
-                user.getRole().name()
-        );
+        String token = generateToken(user);
 
         return new AuthResponse(token, "User registered successfully");
     }
@@ -102,20 +55,19 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid credentials"));
 
-        boolean passwordMatch = passwordEncoder.matches(
-                request.getPassword(),
-                user.getPassword()
-        );
-
-        if (!passwordMatch) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new InvalidCredentialsException("Invalid credentials");
         }
 
-        String token = jwtService.generateToken(
+        String token = generateToken(user);
+
+        return new AuthResponse(token, "Login successful");
+    }
+
+    private String generateToken(User user) {
+        return jwtService.generateToken(
                 user.getEmail(),
                 user.getRole().name()
         );
-
-        return new AuthResponse(token, "Login successful");
     }
 }

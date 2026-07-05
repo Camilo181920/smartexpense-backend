@@ -2,9 +2,12 @@ package com.experience.SmartExpense.controller;
 
 import com.experience.SmartExpense.dto.ExpenseRequest;
 import com.experience.SmartExpense.dto.ExpenseResponseDTO;
+import com.experience.SmartExpense.dto.CategoryTotalDTO;
 import com.experience.SmartExpense.service.ExpenseService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -20,7 +23,7 @@ public class ExpenseController {
 
     @PostMapping
     public ExpenseResponseDTO createExpense(
-            @RequestBody ExpenseRequest request,
+            @Valid @RequestBody ExpenseRequest request,
             Authentication authentication
     ) {
         String email = authentication.getName();
@@ -42,9 +45,35 @@ public class ExpenseController {
     }
 
     @GetMapping("/by-category")
-    public List<Object[]> getByCategory(Authentication authentication) {
+    public List<CategoryTotalDTO> getByCategory(Authentication authentication) {
 
         String email = authentication.getName();
         return expenseService.getExpensesByCategory(email);
+    }
+
+    @PutMapping("/{id}")
+    public ExpenseResponseDTO updateExpense(
+            @PathVariable Long id,
+            @Valid @RequestBody ExpenseRequest request,
+            Authentication authentication
+    ) {
+        return expenseService.updateExpense(
+                id,
+                request,
+                authentication.getName()
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteExpense(
+            @PathVariable Long id,
+            Authentication authentication
+    ) {
+        expenseService.deleteExpense(
+                id,
+                authentication.getName()
+        );
+
+        return ResponseEntity.noContent().build();
     }
 }

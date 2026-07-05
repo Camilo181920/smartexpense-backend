@@ -1,12 +1,14 @@
 package com.experience.SmartExpense.service.impl;
 
 import com.experience.SmartExpense.dto.ExpenseRequest;
+import com.experience.SmartExpense.dto.ExpenseResponseDTO;
+import com.experience.SmartExpense.dto.CategoryTotalDTO;
 import com.experience.SmartExpense.entity.Expense;
 import com.experience.SmartExpense.entity.User;
+import com.experience.SmartExpense.exception.ResourceNotFoundException;
 import com.experience.SmartExpense.repository.ExpenseRepository;
 import com.experience.SmartExpense.repository.UserRepository;
 import com.experience.SmartExpense.service.ExpenseService;
-import com.experience.SmartExpense.dto.ExpenseResponseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +29,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     public ExpenseResponseDTO createExpense(String userEmail, ExpenseRequest request) {
 
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Expense expense = Expense.builder()
                 .title(request.getTitle())
@@ -52,11 +54,13 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public Double getTotalExpenses(String email) {
-        return expenseRepository.getTotalByUserEmail(email);
+
+        Double total = expenseRepository.getTotalByUserEmail(email);
+        return total != null ? total : 0.0;
     }
 
     @Override
-    public List<Object[]> getExpensesByCategory(String email) {
+    public List<CategoryTotalDTO> getExpensesByCategory(String email) {
         return expenseRepository.getTotalByCategory(email);
     }
 
@@ -64,10 +68,10 @@ public class ExpenseServiceImpl implements ExpenseService {
     public ExpenseResponseDTO updateExpense(Long id, ExpenseRequest request, String userEmail) {
 
         Expense expense = expenseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Expense not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Expense not found"));
 
         if (!expense.getUser().getEmail().equals(userEmail)) {
-            throw new RuntimeException("Unauthorized");
+            throw new RuntimeException("Unauthorized access to this expense");
         }
 
         expense.setTitle(request.getTitle());
@@ -83,10 +87,10 @@ public class ExpenseServiceImpl implements ExpenseService {
     public void deleteExpense(Long id, String userEmail) {
 
         Expense expense = expenseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Expense not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Expense not found"));
 
         if (!expense.getUser().getEmail().equals(userEmail)) {
-            throw new RuntimeException("Unauthorized");
+            throw new RuntimeException("Unauthorized access to this expense");
         }
 
         expenseRepository.delete(expense);
@@ -101,6 +105,5 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .category(expense.getCategory())
                 .createdAt(expense.getCreatedAt())
                 .build();
-
     }
 }
