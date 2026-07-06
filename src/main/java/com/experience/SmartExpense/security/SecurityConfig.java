@@ -46,6 +46,14 @@ public class SecurityConfig {
                         // Public authentication endpoints
                         .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
 
+                        // SWAGGER
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+                        .requestMatchers("/error").permitAll()
+
                         // Endpoints available to authenticated users
                         .requestMatchers("/api/users/me").authenticated()
 
