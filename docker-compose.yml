@@ -1,0 +1,46 @@
+services:
+
+  postgres:
+
+    image: postgres:17
+
+    container_name: smartexpense-db
+
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: smartexpense
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+
+    build: .
+
+    container_name: smartexpense-api
+
+    restart: unless-stopped
+
+    depends_on:
+      - postgres
+
+    ports:
+      - "8080:8080"
+
+    environment:
+
+      DB_URL: jdbc:postgresql://postgres:5432/smartexpense
+      DB_USER: postgres
+      DB_PASS: postgres
+
+      JWT_SECRET: ChangeThisSecretKeyForProduction123456789
+
+volumes:
+
+  postgres_data:
