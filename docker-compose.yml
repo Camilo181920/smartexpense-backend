@@ -1,3 +1,5 @@
+name: smartexpense
+
 services:
 
   postgres:
@@ -19,6 +21,15 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - smartexpense-network
+
   app:
 
     build: .
@@ -28,19 +39,27 @@ services:
     restart: unless-stopped
 
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
     ports:
       - "8080:8080"
 
     environment:
-
       DB_URL: jdbc:postgresql://postgres:5432/smartexpense
       DB_USER: postgres
       DB_PASS: postgres
+      JWT_SECRET: ${JWT_SECRET}
 
-      JWT_SECRET: ChangeThisSecretKeyForProduction123456789
+    networks:
+      - smartexpense-network
 
 volumes:
 
   postgres_data:
+    name: smartexpense_postgres_data
+
+networks:
+
+  smartexpense-network:
+    driver: bridge
