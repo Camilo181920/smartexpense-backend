@@ -17,6 +17,10 @@ jobs:
     runs-on: ubuntu-latest
 
 
+    env:
+      JWT_SECRET: mysecretkeymysecretkeymysecretkeymysecretkey
+
+
     steps:
 
       - name: Checkout repository
