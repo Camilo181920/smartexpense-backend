@@ -6,6 +6,9 @@ import com.experience.SmartExpense.dto.ExpenseRequest;
 import com.experience.SmartExpense.dto.ExpenseResponse;
 import com.experience.SmartExpense.service.ExpenseService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -32,6 +35,14 @@ public class ExpenseController {
             summary = "Crear gasto",
             description = "Crea un nuevo gasto asociado al usuario autenticado"
     )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Gasto creado correctamente",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ExpenseResponse.class)
+            )
+    )
     @CommonApiResponses
     public ResponseEntity<ExpenseResponse> createExpense(
             @Valid @RequestBody ExpenseRequest request,
@@ -50,6 +61,16 @@ public class ExpenseController {
             summary = "Obtener gastos",
             description = "Obtiene todos los gastos del usuario autenticado"
     )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Lista de gastos obtenida correctamente",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(
+                            implementation = ExpenseResponse.class
+                    )
+            )
+    )
     @CommonApiResponses
     public ResponseEntity<List<ExpenseResponse>> getExpenses(
             Authentication authentication
@@ -63,6 +84,14 @@ public class ExpenseController {
     @Operation(
             summary = "Total de gastos",
             description = "Devuelve la suma total de gastos del usuario"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Total calculado correctamente",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = Double.class)
+            )
     )
     @CommonApiResponses
     public ResponseEntity<Double> getSummary(
@@ -78,6 +107,16 @@ public class ExpenseController {
             summary = "Gastos por categoría",
             description = "Agrupa los gastos del usuario por categoría"
     )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Resumen por categoría obtenido correctamente",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(
+                            implementation = CategoryTotalDTO.class
+                    )
+            )
+    )
     @CommonApiResponses
     public ResponseEntity<List<CategoryTotalDTO>> getByCategory(
             Authentication authentication
@@ -91,6 +130,14 @@ public class ExpenseController {
     @Operation(
             summary = "Actualizar gasto",
             description = "Actualiza un gasto existente del usuario"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Gasto actualizado correctamente",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ExpenseResponse.class)
+            )
     )
     @CommonApiResponses
     public ResponseEntity<ExpenseResponse> updateExpense(
@@ -111,6 +158,10 @@ public class ExpenseController {
     @Operation(
             summary = "Eliminar gasto",
             description = "Elimina un gasto del usuario"
+    )
+    @ApiResponse(
+            responseCode = "204",
+            description = "Gasto eliminado correctamente"
     )
     @CommonApiResponses
     public ResponseEntity<Void> deleteExpense(

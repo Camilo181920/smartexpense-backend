@@ -6,6 +6,8 @@ import com.experience.SmartExpense.dto.LoginRequest;
 import com.experience.SmartExpense.dto.RegisterRequest;
 import com.experience.SmartExpense.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -13,10 +15,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("/api/auth")
-@Tag(name = "Authentication", description = "Endpoints de autenticación y registro")
+@Tag(
+        name = "Authentication",
+        description = "Endpoints de autenticación y registro"
+)
 public class AuthController {
 
     private final AuthService authService;
@@ -30,7 +34,14 @@ public class AuthController {
             summary = "Registrar usuario",
             description = "Crea un nuevo usuario en el sistema y devuelve un token JWT"
     )
-    @ApiResponse(responseCode = "201", description = "Usuario creado correctamente")
+    @ApiResponse(
+            responseCode = "201",
+            description = "Usuario creado correctamente",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = AuthResponse.class)
+            )
+    )
     @CommonApiResponses
     public ResponseEntity<AuthResponse> register(
             @Valid @RequestBody RegisterRequest request
@@ -46,7 +57,14 @@ public class AuthController {
             summary = "Iniciar sesión",
             description = "Autentica un usuario y devuelve un token JWT"
     )
-    @ApiResponse(responseCode = "200", description = "Login exitoso")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Login exitoso",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = AuthResponse.class)
+            )
+    )
     @CommonApiResponses
     public ResponseEntity<AuthResponse> login(
             @Valid @RequestBody LoginRequest request
